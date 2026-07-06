@@ -97,6 +97,19 @@ current setup with written RESTORE instructions.
   timing, first-comment).
 - Posting itself is an outward action: hand the drafts to the user.
 
+## Phase 6½ — The README gate (/awesome-readme) — mandatory last polish gate
+
+The moment a shipit run starts, add this to the run's todo list; it blocks true completion.
+Before closing — fresh ship or update — load the **awesome-readme** skill and hold the
+repo's README to its bar: the 13-element completeness checklist (hero SVG banner, live
+badges, killer hook section, mermaid, ≤30s quickstart, linked core table, collapsible
+depth, making-of/provenance, safety table, trust section, star CTA, cross-links, license)
+plus its live verification battery — banner serves `image/svg+xml`, every badge URL
+resolves, anchors matched against GitHub's ACTUAL rendered `user-content-*` ids, relative
+links exist, every number observed, CI green. Fresh ships get the full build; updates
+re-run the battery and fill whatever the README is missing. Skip ONLY when the run
+produced no public repo surface — and record that reason in the report.
+
 ## Phase 7 — Retrospect BEFORE announcing
 
 Use the fresh-eyes window between "released" and "announced": run the tool again in a fresh
@@ -106,12 +119,16 @@ installed — caught in this window, fixed as v0.1.1, formula bumped, before any
 out). Then deliver: a report (what shipped, where, how it was verified — honestly, including
 what was NOT verified), the edge-case brief, and the prepared posts.
 
-**Close with the link — default, every run.** The FINAL line of every shipit run's
-closing report — fresh ship or update — is the git repo URL (the newly created repo's
-link, or the existing one on updates), on its own line, with release/tap links beside it
-when they exist. The user should never have to ask "where is it?". Checkpoint skills
-that chain into shipit (e.g. /sas) inherit this law and must end their own report the
-same way.
+**Close with the links — HARD LAW, zero exceptions, every run.** Every shipit run's
+closing report — fresh ship or update, complete or partial — ENDS with a repo-link
+block: EVERY repo CREATED and EVERY repo UPDATED by the run, each labeled
+(`🆕 created:` / `🔄 updated:`) with release/tap/docs links beside it where they exist.
+Multi-repo runs list ALL of them — use a table when more than one. NOTHING may follow
+the link block; it is the report's last content. A report that omits or buries the
+links is an UNFINISHED run — the user must never have to ask "where is it?" (this law
+was hardened 2026-07-06 because a run ended without the link and the user had to ask).
+Checkpoint skills that chain into shipit (e.g. /sas) inherit this law verbatim and must
+end their own final report the same way.
 
 ## Update runs — re-shipping an already-published project
 
@@ -141,3 +158,7 @@ delta gate) is an UPDATE, not a fresh ship — never re-init, never re-create:
 - Re-initializing / re-creating on an update run instead of fetching and bumping.
 - Publishing a number (assertion count, benchmark) you didn't see printed.
 - Writing shared surfaces (registry, tap, rc) blind to the other agents on the machine.
+- Ending the closing report without the repo-link block, or with anything after it —
+  the links are the report's mandatory last content (hardened 2026-07-06; it happened).
+- Declaring true completion without the Phase 6½ /awesome-readme gate — or without
+  recording, in the report, why it didn't apply.

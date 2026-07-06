@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.4.0 — 2026-07-06
+
+- New **Phase 6½ — the README gate**: /awesome-readme is now a mandatory last polish
+  gate on every run — the 13-element instant-star checklist + live verification battery
+  (banner content-type, badge URLs, anchors vs GitHub's rendered ids, links, observed
+  numbers, CI) before true completion; skips must be recorded with a reason
+- **Close-with-the-links law HARDENED** (user directive, after a run ended without the
+  link): zero exceptions; the report ENDS with a repo-link block listing EVERY repo
+  created and updated (labeled, a table when multiple); nothing may follow it; /sas
+  inherits verbatim
+- Two new anti-patterns guarding both (link block omitted/buried · gate skipped silently)
+- README: badge row added (release · license · stars)
+
 ## v0.3.0 — 2026-07-06
 
 - New default law (user directive): **close with the link** — the FINAL line of every

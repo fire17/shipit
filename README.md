@@ -1,5 +1,9 @@
 # shipit
 
+[![Release](https://img.shields.io/github/v/release/fire17/shipit?color=e8b84a&label=release)](https://github.com/fire17/shipit/releases)
+[![License](https://img.shields.io/github/license/fire17/shipit?color=blue)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/fire17/shipit?style=social)](https://github.com/fire17/shipit/stargazers)
+
 **A Claude Code skill that takes a project from idea to state-of-the-art release — designed against edge cases, tested across runtimes, packaged, published, with launch media prepared. Alias: `/sota`.**
 
 ```console
