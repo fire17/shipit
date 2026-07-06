@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.0 — 2026-07-06
+
+- New default law (user directive): **close with the link** — the FINAL line of every
+  shipit run's report (fresh or update) is the git repo URL, with release/tap links
+  beside it when they exist; chaining checkpoint skills (/sas) inherit the law and end
+  their own reports the same way
+
 ## v0.2.0 — 2026-07-06
 
 Learnings folded back from the skill's first day in production (this repo, bettercd,

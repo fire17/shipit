@@ -106,6 +106,13 @@ installed — caught in this window, fixed as v0.1.1, formula bumped, before any
 out). Then deliver: a report (what shipped, where, how it was verified — honestly, including
 what was NOT verified), the edge-case brief, and the prepared posts.
 
+**Close with the link — default, every run.** The FINAL line of every shipit run's
+closing report — fresh ship or update — is the git repo URL (the newly created repo's
+link, or the existing one on updates), on its own line, with release/tap links beside it
+when they exist. The user should never have to ask "where is it?". Checkpoint skills
+that chain into shipit (e.g. /sas) inherit this law and must end their own report the
+same way.
+
 ## Update runs — re-shipping an already-published project
 
 `/shipit` on something already released (directly, or chained from a checkpoint skill's
