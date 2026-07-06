@@ -68,7 +68,7 @@ Uninstall: `sh install.sh --uninstall` (removes only what it owns; backups are k
 
 ## Verification
 
-`tests/run.sh` — 18 assertions (skill structure, copy/link/uninstall modes, idempotency, backup-on-divergence, foreign-skill preservation) under bash, zsh, and dash; shellcheck-clean; CI on ubuntu + macos.
+`tests/run.sh` — 25 assertions (skill structure incl. all 8 phases, copy/link/uninstall modes, idempotency, backup-on-divergence, foreign-skill preservation) under bash, zsh, and dash; shellcheck-clean; CI on ubuntu + macos.
 
 ## FAQ
 
