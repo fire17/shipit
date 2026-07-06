@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" role="img" aria-label="SHIPIT — idea to state-of-the-art release, end to end, every gate passed not claimed">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1420"/>
+      <stop offset="55%" stop-color="#0f1d2e"/>
+      <stop offset="100%" stop-color="#14263a"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f5d67b"/>
+      <stop offset="50%" stop-color="#e8b84a"/>
+      <stop offset="100%" stop-color="#c9913a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.85" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#e8b84a" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#e8b84a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="340" fill="url(#bg)"/>
+  <rect width="1280" height="340" fill="url(#glow)"/>
+
+  <!-- eight gates, one road through them, a release at the end -->
+  <g>
+    <g fill="none" stroke="#e8b84a" stroke-width="2">
+      <ellipse cx="930"  cy="170" rx="13" ry="92" stroke-opacity="0.30"/>
+      <ellipse cx="967"  cy="170" rx="12" ry="84" stroke-opacity="0.36"/>
+      <ellipse cx="1004" cy="170" rx="11" ry="76" stroke-opacity="0.42"/>
+      <ellipse cx="1041" cy="170" rx="10" ry="68" stroke-opacity="0.50"/>
+      <ellipse cx="1078" cy="170" rx="9"  ry="60" stroke-opacity="0.58"/>
+      <ellipse cx="1115" cy="170" rx="8"  ry="52" stroke-opacity="0.68"/>
+      <ellipse cx="1152" cy="170" rx="7"  ry="44" stroke-opacity="0.80"/>
+      <ellipse cx="1189" cy="170" rx="6"  ry="36" stroke-opacity="0.95"/>
+    </g>
+    <line x1="880" y1="170" x2="1215" y2="170" stroke="url(#gold)" stroke-width="2.5"/>
+    <path d="M1246 170 L1232 164 L1236 170 L1232 176 Z" fill="#f5d67b"/>
+    <path d="M1246 170 l8 -3 -3 3 3 3 Z" fill="#f5d67b"/>
+    <path d="M1252 158 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 Z" fill="#f5d67b"/>
+    <text x="906" y="296" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-style="italic" fill="#8fa3c8">eight gates. passed, not claimed.</text>
+  </g>
+
+  <text x="72" y="104" font-family="Georgia, 'Times New Roman', serif" font-size="20" letter-spacing="9" fill="#8fa3c8">EVERY GATE PASSED, NOT CLAIMED.</text>
+  <text x="70" y="176" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-weight="bold" fill="url(#gold)">SHIPIT</text>
+  <text x="72" y="222" font-family="Georgia, 'Times New Roman', serif" font-size="24" font-style="italic" fill="#c9d6ea">idea → state-of-the-art release, end to end</text>
+
+  <rect x="72" y="248" width="560" height="2" fill="url(#gold)" opacity="0.6"/>
+  <g font-family="Verdana, Geneva, sans-serif" font-size="15" fill="#9aa8c4">
+    <text x="72" y="286">8 GATED PHASES&#160;&#160;·&#160;&#160;INSTALL-TESTED FROM THE PUBLISHED CHANNEL&#160;&#160;·&#160;&#160;SHIPPED ITSELF</text>
+  </g>
+</svg>
