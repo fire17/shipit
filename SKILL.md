@@ -1,6 +1,6 @@
 ---
 name: shipit
-description: Take a simple project idea (or an existing small project) and ship it STATE OF THE ART — designed against edge cases, tested across runtimes, packaged, published (GitHub + a package manager), with launch media prepared. Use whenever the user wants to "ship", "release", "publish", "package", "open-source" a project, "make it state of the art", "take this from idea to released", or asks for the full build→test→publish→announce pipeline — even if they only name one phase, this skill covers the whole arc. Distilled from the bettercd v0.1 release (2026-07-06).
+description: Take a simple project idea (or an existing small project) and ship it STATE OF THE ART — designed against edge cases, tested across runtimes, packaged, published (GitHub + a package manager), with launch media prepared. Also handles UPDATE runs — re-shipping an already-published project (version bump, channel bumps, re-verified install) — so checkpoint skills like /sas can chain into it safely. Use whenever the user wants to "ship", "release", "publish", "re-publish", "package", "open-source" a project, "bump the version", "make it state of the art", "take this from idea to released", or asks for the full build→test→publish→announce pipeline — even if they only name one phase, this skill covers the whole arc. Distilled from the bettercd v0.1 release (2026-07-06); battle-tested same day on itself, claude-queue, and my-skills.
 argument-hint: "project idea or path to ship, e.g. a better cd / ~/Creations/bettercd"
 ---
 
@@ -15,7 +15,11 @@ not a release.
 
 - Toolchain + auth: `gh auth status` (which account?), package managers present, runtimes
   installed. Check name collisions NOW (`gh repo list`, `brew search`, registry search) —
-  renaming after publish is expensive.
+  renaming after publish is expensive. A collision with the user's OWN repo isn't a
+  collision — it means this is an **update run** (see "Update runs" below).
+- Other agents may share this machine and these surfaces (registries, taps, rc files,
+  even this repo): before writing anything shared, check it's quiescent (mtimes) and
+  re-read what changed since you last looked; `git fetch` before you push.
 - Users' existing paradigm: if your tool wraps/replaces something people already configure
   (their shell, editor, prompt), inspect how the current user has it set up — you'll design
   for composition, and their machine is your first integration test.
@@ -52,8 +56,14 @@ current setup with written RESTORE instructions.
   (real example: zsh's `command cd` runs the external no-op `/usr/bin/cd`; POSIX shells run
   the builtin — every zsh test failed until delegates used `builtin`).
 - Stub external tools in tests for determinism; never depend on the machine's real state/db.
-- Beyond the suite: one live end-to-end run on the real machine with the user's real config.
+- Beyond the suite: one live end-to-end run on the real machine with the user's real
+  config — in a real fresh interactive shell, not the agent-harness shell (harness shells
+  lie: different rc processing, cosmetic noise, missing modules).
 - Lint clean (shellcheck/ruff/eslint); annotate intentional violations rather than ignoring.
+- **Honest numbers**: every count you publish (assertions, benchmarks) must match observed
+  output. Test counters that only count failures silently under-report — count passes too
+  (real example: a suite claimed 18, printed 17, and actually ran 25 once the pass branch
+  was counted).
 
 ## Phase 4 — Package
 
@@ -96,6 +106,23 @@ installed — caught in this window, fixed as v0.1.1, formula bumped, before any
 out). Then deliver: a report (what shipped, where, how it was verified — honestly, including
 what was NOT verified), the edge-case brief, and the prepared posts.
 
+## Update runs — re-shipping an already-published project
+
+`/shipit` on something already released (directly, or chained from a checkpoint skill's
+delta gate) is an UPDATE, not a fresh ship — never re-init, never re-create:
+
+1. `git fetch` first — a parallel session may have pushed since you last looked.
+2. Version-bump discipline, all surfaces in one pass: version string in the artifact →
+   CHANGELOG → commit → tag `vX.Y.Z` → release with notes that match reality (edit old
+   notes if a published number turned out wrong). Patch = fixes; minor = new capability.
+3. Bump every package channel: a formula update via `gh api PUT contents` needs the
+   current file's `sha` (fetch it first or the PUT 409s); recompute the tarball sha256.
+4. Re-run the Phase 5 gate: upgrade/reinstall from the published channel and re-test.
+5. Deltas of an already-authorized publication inherit its authorization; a NEW outward
+   surface (new registry, first-ever post) still needs the user.
+6. Bookkeeping in the same pass: if the machine keeps a project registry or skill vault,
+   sync its entry (status/updated/changelog) alongside the release.
+
 ## Anti-patterns (each one burned someone)
 
 - Claiming "published" without installing from the published channel.
@@ -104,3 +131,6 @@ what was NOT verified), the edge-case brief, and the prepared posts.
 - Clobbering user config without a backup + written restore path.
 - Announcing before the first CI run is green.
 - Skipping the retrospective window and shipping the wart to the front page.
+- Re-initializing / re-creating on an update run instead of fetching and bumping.
+- Publishing a number (assertion count, benchmark) you didn't see printed.
+- Writing shared surfaces (registry, tap, rc) blind to the other agents on the machine.
