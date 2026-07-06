@@ -1,0 +1,106 @@
+---
+name: shipit
+description: Take a simple project idea (or an existing small project) and ship it STATE OF THE ART — designed against edge cases, tested across runtimes, packaged, published (GitHub + a package manager), with launch media prepared. Use whenever the user wants to "ship", "release", "publish", "package", "open-source" a project, "make it state of the art", "take this from idea to released", or asks for the full build→test→publish→announce pipeline — even if they only name one phase, this skill covers the whole arc. Distilled from the bettercd v0.1 release (2026-07-06).
+argument-hint: "project idea or path to ship, e.g. a better cd / ~/Creations/bettercd"
+---
+
+# shipit — idea → state-of-the-art release, end to end
+
+Ship small tools the way the best OSS maintainers do. The phases below are ordered;
+each has a gate you must actually pass (not claim). The core creed: **verify by running
+the real thing from the published channel** — a release you didn't install-test is a claim,
+not a release.
+
+## Phase 0 — Ground truth first
+
+- Toolchain + auth: `gh auth status` (which account?), package managers present, runtimes
+  installed. Check name collisions NOW (`gh repo list`, `brew search`, registry search) —
+  renaming after publish is expensive.
+- Users' existing paradigm: if your tool wraps/replaces something people already configure
+  (their shell, editor, prompt), inspect how the current user has it set up — you'll design
+  for composition, and their machine is your first integration test.
+- Outward actions (repo creation, pushes, posts) need explicit user authorization. If the
+  request already grants it, proceed; otherwise prepare everything and ask once, batched.
+
+## Phase 1 — Design against the failure modes
+
+Before code: write the edge-case ladder. For every "magic" behavior ask (a) what does a typo
+do, (b) what does a script/CI invocation do, (c) how do I undo it, (d) what user setup could
+it clobber? Rules that generalize:
+
+- **Compose, never clobber**: detect what the user had (function/config/tool), delegate to
+  it; never silently change semantics they chose.
+- **Destructive-safe undo**: prefer operations that can't destroy content (`rmdir` not
+  `rm -rf`); print the undo command at the moment of the side effect.
+- **Interactive-only prompts**: guard every prompt with a tty check; scripts get plain
+  old behavior, never hangs or surprises.
+- **Escape hatches**: an env var to disable each magic behavior; document `builtin`/native
+  bypasses.
+- Deliver the edge-case brief to the user — the unknown-unknowns list is part of the product.
+
+## Phase 2 — Build minimal
+
+Single file if possible, zero dependencies, hot path measured (a real benchmark number for
+the README: overhead vs baseline). Optional integrations (fzf, zoxide, …) degrade gracefully
+and get a `doctor` subcommand that checks/installs them — after backing up the user's
+current setup with written RESTORE instructions.
+
+## Phase 3 — Verify like an adversary
+
+- Dependency-free test harness in-repo (plain sh/py — no framework users must install).
+- **Matrix across runtimes, not just your shell** — portability bugs live in the deltas
+  (real example: zsh's `command cd` runs the external no-op `/usr/bin/cd`; POSIX shells run
+  the builtin — every zsh test failed until delegates used `builtin`).
+- Stub external tools in tests for determinism; never depend on the machine's real state/db.
+- Beyond the suite: one live end-to-end run on the real machine with the user's real config.
+- Lint clean (shellcheck/ruff/eslint); annotate intentional violations rather than ignoring.
+
+## Phase 4 — Package
+
+- README that leads with the outcome (demo block first), a safety-design table, honest
+  benchmark, install matrix (package manager / curl / manual / plugin manager), uninstall +
+  restore section, FAQ that answers the skeptic.
+- LICENSE, CHANGELOG, `.github/workflows/ci.yml` (lint + test matrix on ubuntu+macos).
+- Installer script: backs up rc/config, appends an idempotent marked block
+  (`# >>> name >>>` … `# <<< name <<<`), prints exact next steps.
+
+## Phase 5 — Publish (each step verified)
+
+1. `git init -b main`, commit, `gh repo create --public --source . --push`
+   (if ssh push fails: `gh auth setup-git` + https remote).
+2. Tag + `gh release create` with real notes. Add repo topics for discoverability.
+3. Package managers that don't need new credentials: own Homebrew tap
+   (`Formula/<name>.rb` via `gh api PUT contents`, sha256 of the release tarball) and the
+   curl installer. Registries needing logins (npm, PyPI): prepare, ask user to run the
+   final push. For non-binary artifacts (skills, dotfiles, configs) the curl installer /
+   git clone IS the package channel — don't force them into brew.
+4. **Gate**: install from the published channel on a clean-ish path (`brew install
+   user/tap/name` + `brew test`) and watch the FIRST CI run — it usually fails on runner
+   env deltas (e.g. XDG_CONFIG_HOME being globally set). Fix, push, see green.
+
+## Phase 6 — Media (prepare, never auto-post)
+
+- `posts/hackernews.md`: Show HN title + body that invites critique of the design
+  (HN rewards honest engineering discussion, not marketing), link to repo + X placeholder.
+- `posts/x.md`: short thread — hook, safety/design ladder, perf numbers, install one-liner,
+  HN link placeholder. Posts cross-reference each other; include posting notes (order,
+  timing, first-comment).
+- Posting itself is an outward action: hand the drafts to the user.
+
+## Phase 7 — Retrospect BEFORE announcing
+
+Use the fresh-eyes window between "released" and "announced": run the tool again in a fresh
+environment, read the README as a stranger. Fix warts as a patch release now (real example:
+zoxide's doctor printed a false-positive warning on every shell start with the tool
+installed — caught in this window, fixed as v0.1.1, formula bumped, before any post went
+out). Then deliver: a report (what shipped, where, how it was verified — honestly, including
+what was NOT verified), the edge-case brief, and the prepared posts.
+
+## Anti-patterns (each one burned someone)
+
+- Claiming "published" without installing from the published channel.
+- Testing only in your own shell/runtime/OS.
+- Prompts or auto-magic reachable from non-interactive contexts.
+- Clobbering user config without a backup + written restore path.
+- Announcing before the first CI run is green.
+- Skipping the retrospective window and shipping the wart to the front page.
