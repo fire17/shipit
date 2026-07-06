@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.4.1 — 2026-07-06
+
+Docs-only: the playbook took its own Phase 6½ medicine.
+
+- README: full /awesome-readme treatment — eight-gates banner, 7 live badges,
+  the phases table deep-linked into SKILL.md (anchors verified against GitHub's
+  rendered blob ids, including the Phase 6½ heading), the lineage table with
+  version-by-version receipts, mermaid of the gated pipeline, star CTA.
+- New `assets/banner.svg` (theme-safe, system fonts only).
+
 ## v0.4.0 — 2026-07-06
 
 - New **Phase 6½ — the README gate**: /awesome-readme is now a mandatory last polish
