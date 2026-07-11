@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.5.1 — 2026-07-11
+
+Installer fix caught by shipit's own Phase 5 install-from-channel gate: the
+curl/wget/copy/`--link` paths shipped only `SKILL.md`, so v0.5.0's new
+`references/github-pages-playbook.md` (linked from Phase 5¾) was missing on every fresh
+install. All install modes now bundle the `references/` dir (copy copies it, download
+fetches each ref, `--link` symlinks it, uninstall removes it). Two regression assertions
+added (27 × 3 shells green).
+
 ## v0.5.0 — 2026-07-11
 
 New **Phase 5¾ — Web presence** (two standing laws) + a battle-tested how-to reference.

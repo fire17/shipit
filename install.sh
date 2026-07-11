@@ -16,7 +16,10 @@
 set -e
 
 SKILLS_DIR="${SHIPIT_SKILLS_DIR:-$HOME/.claude/skills}"
-RAW_URL="https://raw.githubusercontent.com/fire17/shipit/main/SKILL.md"
+RAW_BASE="https://raw.githubusercontent.com/fire17/shipit/main"
+RAW_URL="$RAW_BASE/SKILL.md"
+# bundled reference docs SKILL.md links to (relative to the skill dir)
+REFS="references/github-pages-playbook.md"
 skill_dir="$SKILLS_DIR/shipit"
 alias_dir="$SKILLS_DIR/sota"
 
@@ -35,7 +38,7 @@ is_our_alias() {
 if [ "${1-}" = "--uninstall" ]; then
     if [ -f "$skill_dir/SKILL.md" ] || [ -L "$skill_dir/SKILL.md" ]; then
         if grep -q '^name: shipit$' "$skill_dir/SKILL.md" 2>/dev/null || [ -L "$skill_dir/SKILL.md" ]; then
-            rm -f "$skill_dir/SKILL.md"; rmdir "$skill_dir" 2>/dev/null || true
+            rm -rf "$skill_dir/SKILL.md" "$skill_dir/references"; rmdir "$skill_dir" 2>/dev/null || true
             say "shipit: removed $skill_dir"
         else
             say "shipit: $skill_dir/SKILL.md doesn't look like ours — left in place"
@@ -70,18 +73,31 @@ fi
 if [ "$mode" = "link" ]; then
     [ -f "$src" ] || { say "shipit: --link needs a local checkout (SKILL.md next to install.sh)"; exit 1; }
     ln -sf "$src" "$skill_dir/SKILL.md"
+    [ -d "$here/references" ] && { rm -rf "$skill_dir/references"; ln -sf "$here/references" "$skill_dir/references"; }
     say "shipit: linked $skill_dir/SKILL.md → $src (edits in the checkout propagate)"
 elif [ -f "$src" ]; then
-    rm -f "$skill_dir/SKILL.md"   # may be a stale symlink from a prior --link install
+    rm -rf "$skill_dir/SKILL.md" "$skill_dir/references"  # clear stale symlinks from a prior --link install
     cp "$src" "$skill_dir/SKILL.md"
+    for ref in $REFS; do
+        [ -f "$here/$ref" ] || continue
+        mkdir -p "$skill_dir/$(dirname "$ref")"; cp "$here/$ref" "$skill_dir/$ref"
+    done
     say "shipit: installed from local checkout → $skill_dir/SKILL.md"
 elif command -v curl >/dev/null 2>&1; then
-    rm -f "$skill_dir/SKILL.md"
+    rm -rf "$skill_dir/SKILL.md" "$skill_dir/references"
     curl -fsSL "$RAW_URL" -o "$skill_dir/SKILL.md"
+    for ref in $REFS; do
+        mkdir -p "$skill_dir/$(dirname "$ref")"
+        curl -fsSL "$RAW_BASE/$ref" -o "$skill_dir/$ref" || say "shipit: warning — could not fetch $ref"
+    done
     say "shipit: downloaded → $skill_dir/SKILL.md"
 elif command -v wget >/dev/null 2>&1; then
-    rm -f "$skill_dir/SKILL.md"
+    rm -rf "$skill_dir/SKILL.md" "$skill_dir/references"
     wget -q "$RAW_URL" -O "$skill_dir/SKILL.md"
+    for ref in $REFS; do
+        mkdir -p "$skill_dir/$(dirname "$ref")"
+        wget -q "$RAW_BASE/$ref" -O "$skill_dir/$ref" || say "shipit: warning — could not fetch $ref"
+    done
     say "shipit: downloaded → $skill_dir/SKILL.md"
 else
     say "shipit: need curl or wget (or run install.sh from a cloned repo)"; exit 1

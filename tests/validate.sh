@@ -28,6 +28,8 @@ sh "$repo/install.sh" >/dev/null 2>&1; check "copy install runs" $?
 grep -q '^name: shipit$' "$SHIPIT_SKILLS_DIR/sota/SKILL.md" 2>/dev/null
 check "sota alias resolves through symlink" $?
 [ -L "$SHIPIT_SKILLS_DIR/sota/SKILL.md" ]; check "alias is a symlink (one source of truth)" $?
+[ -f "$SHIPIT_SKILLS_DIR/shipit/references/github-pages-playbook.md" ]
+check "copy install bundles the references dir SKILL.md links to" $?
 
 # --- idempotency: second run, no backup churn on identical content ------------
 sh "$repo/install.sh" >/dev/null 2>&1; check "second install run exits 0" $?
@@ -44,6 +46,8 @@ check "divergent copy backed up before overwrite" $?
 # --- link mode -----------------------------------------------------------------
 sh "$repo/install.sh" --link >/dev/null 2>&1; check "--link install runs" $?
 [ -L "$SHIPIT_SKILLS_DIR/shipit/SKILL.md" ]; check "--link makes SKILL.md a symlink to checkout" $?
+[ -L "$SHIPIT_SKILLS_DIR/shipit/references" ] && [ -f "$SHIPIT_SKILLS_DIR/shipit/references/github-pages-playbook.md" ]
+check "--link symlinks the references dir (reachable through it)" $?
 
 # --- foreign sota skill is never clobbered ------------------------------------
 TMP2="$(mktemp -d)"
