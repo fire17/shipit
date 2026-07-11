@@ -103,6 +103,7 @@ A `SKILL.md` playbook Claude loads and executes — eight ordered phases, each e
 | 3 | [Verify like an adversary](SKILL.md#phase-3--verify-like-an-adversary) | dependency-free harness green across the runtime *matrix*, honest counters |
 | 4 | [Package](SKILL.md#phase-4--package) | README leads with the outcome; LICENSE, CHANGELOG, CI, backing-up installer |
 | 5 | [Publish](SKILL.md#phase-5--publish-each-step-verified) | **installed from the published channel; first CI run watched to green** |
+| 5¾ | [Web presence](SKILL.md#phase-5--web-presence-favicon-always-github-pages-whenever-hostable) | favicon on every page + any hostable web page shipped as a Pages site — see [`references/github-pages-playbook.md`](references/github-pages-playbook.md) |
 | 6 | [Media](SKILL.md#phase-6--media-prepare-never-auto-post) | Show HN + X thread prepared — posting stays the human's call |
 | 6½ | [The README gate](SKILL.md#phase-6--the-readme-gate-awesome-readme--mandatory-last-polish-gate) | [`/awesome-readme`](https://github.com/fire17/awesome-readme)'s 13 elements + live battery, before true completion |
 | 7 | [Retrospect BEFORE announcing](SKILL.md#phase-7--retrospect-before-announcing) | a fresh-eyes run in the released-but-unannounced window catches the wart |

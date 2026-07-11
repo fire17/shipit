@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.5.0 — 2026-07-11
+
+New **Phase 5¾ — Web presence** (two standing laws) + a battle-tested how-to reference.
+
+- **Favicon, always** on any shipped page: mark-derived `assets/favicon.svg` + 64px PNG
+  fallback, transparent, mid-gray/two-tone for light+dark tabs, thickened strokes for
+  16px; page carries a "View on GitHub" link.
+- **GitHub Pages whenever hostable**: any project with a web page (demo/playground/docs/
+  HTML app) ships as a Pages site — `index.html` at root, verify deployed CONTENT (the
+  builds API `.commit` lies), then wire the domain.
+- New `references/github-pages-playbook.md`: the complete worked HOW from the
+  TesseractLogo ship — favicon design rules, `akeyo.io/<Repo>/` (path) vs
+  `<name>.akeyo.io` (subdomain) forms, Namecheap DNS table (apex A ×4, www, wildcard,
+  verification TXT), GitHub `gh api pages` commands, cert/HTTPS enforcement, and the
+  verification battery (authoritative dig, pinned-IP curl, wildcard proof) — plus every
+  gotcha that burned the run (parked-domain poisoning, stale local DNS/build sha, ssh
+  push fail, "site not secure" stale tab).
+- Anti-patterns added: no-favicon ship, unpublished hostable page, trusting builds
+  `.commit`/local `dig`, wildcard CNAME without domain verification (subdomain takeover).
+
 ## v0.4.1 — 2026-07-06
 
 Docs-only: the playbook took its own Phase 6½ medicine.

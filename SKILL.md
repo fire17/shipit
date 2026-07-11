@@ -87,6 +87,48 @@ current setup with written RESTORE instructions.
 4. **Gate**: install from the published channel on a clean-ish path (`brew install
    user/tap/name` + `brew test`) and watch the FIRST CI run — it usually fails on runner
    env deltas (e.g. XDG_CONFIG_HOME being globally set). Fix, push, see green.
+5. **Birth the `.project` marker (ripple gate)** — a FIRST ship creates
+   `<project-root>/.project/` (DIR form with a `status` file inside — the default for
+   anything pushed to GitHub, so richer state stores naturally as sibling files; a
+   plain `.project` file is fine for local-only work): `#project v1` header, flat
+   `key: value` state block (slug, status, version, repo, channels, first_shipped,
+   last_shipped, refs-out…), a `---` separator, freeform verbatim below. From this
+   moment the project is under the ripple law: every future change to it — or to
+   anything it's referenced by — must update all references and stage republishing of
+   affected published projects. Tool:
+   `python3 ~/.claude/skills/ripple/scripts/ripple_graph.py ensure-project <slug>
+   status=published repo=<url> version=<vX.Y.Z>`; full spec in
+   `~/.claude/skills/ripple/references/project-file.md`.
+
+## Phase 5¾ — Web presence: favicon always, GitHub Pages whenever hostable
+
+Two standing laws for every ship (full worked HOW — every command, DNS table, and gotcha
+from the TesseractLogo ship — in `references/github-pages-playbook.md`; read it before
+executing this phase):
+
+1. **Favicon, always.** Any shipped page (Pages site, docs site, bundled HTML app) gets a
+   favicon generated from the project's own mark: `assets/favicon.svg` + 64px PNG
+   fallback, transparent background, mid-gray/two-tone so it reads on light AND dark
+   tabs, strokes thickened for 16px legibility. Wire `<link rel="icon" ...>` (svg) +
+   `<link rel="alternate icon" ...>` (png). Plus a "View on GitHub" link on the page
+   itself — site and repo must point at each other.
+2. **If the project has (or can trivially have) a web page — a demo, playground, docs,
+   or the app itself is HTML — ALWAYS ship it as a GitHub Pages site.** `index.html` at
+   repo root, enable via `gh api repos/<o>/<r>/pages -X POST` (branch main, path `/`),
+   verify the deployed CONTENT with curl (the builds API's `.commit` field lies after
+   second pushes).
+
+Domain wiring (fire17-specific): apex `akeyo.io` lives on `fire17/fire17.github.io`, so
+every project auto-serves at `akeyo.io/<Repo>/`. For a memorable subdomain —
+short + lowercase, e.g. `tesseract.akeyo.io` — one command:
+`gh api -X PUT repos/fire17/<repo>/pages -f cname=<name>.akeyo.io` (wildcard
+`* CNAME fire17.github.io.` already exists at Namecheap; GitHub then commits a CNAME
+file — `git pull --rebase` before your next push). Always finish with the playbook's
+verification battery: authoritative dig via `@dns1.registrar-servers.com` (local cache
+lies), pinned-IP curl (`--resolve <host>:443:185.199.108.153`), cert-state poll, then
+PUT `https_enforced=true` (resending cname+source), and prove http→https 301. Wildcard
+proof: `dig +short test123.akeyo.io` → 185.199.x. Report the live URL in the final
+repo-link block.
 
 ## Phase 6 — Media (prepare, never auto-post)
 
@@ -145,11 +187,22 @@ delta gate) is an UPDATE, not a fresh ship — never re-init, never re-create:
 5. Deltas of an already-authorized publication inherit its authorization; a NEW outward
    surface (new registry, first-ever post) still needs the user.
 6. Bookkeeping in the same pass: if the machine keeps a project registry or skill vault,
-   sync its entry (status/updated/changelog) alongside the release.
+   sync its entry (status/updated/changelog) alongside the release; refresh the
+   project's `.project` marker (`version`, `last_shipped`).
+7. **Ripple the update (default-on — the user never has to ask):**
+   `python3 ~/.claude/skills/ripple/scripts/ripple_graph.py check <changed paths>` —
+   the cycle-safe dependency graph lists every node referencing what just shipped.
+   Update every stale reference (vault copies, aliases, snapshots, doc-mentions,
+   registry entries) in this same pass, and STAGE the republish of every affected
+   published project as one batch behind ONE user confirmation. Load the `ripple`
+   skill (alias /rpl) for the full law.
 
 ## Anti-patterns (each one burned someone)
 
 - Claiming "published" without installing from the published channel.
+- Shipping an update and walking away with dependents stale — the user had to say
+  "remember to update all the references and republish related projects" many times a
+  day before the ripple law (/ripple + `.project` markers) made it default-on.
 - Testing only in your own shell/runtime/OS.
 - Prompts or auto-magic reachable from non-interactive contexts.
 - Clobbering user config without a backup + written restore path.
@@ -162,3 +215,10 @@ delta gate) is an UPDATE, not a fresh ship — never re-init, never re-create:
   the links are the report's mandatory last content (hardened 2026-07-06; it happened).
 - Declaring true completion without the Phase 6½ /awesome-readme gate — or without
   recording, in the report, why it didn't apply.
+- Shipping an HTML/web project with no favicon, or leaving a hostable web page
+  unpublished when GitHub Pages was one command away (Phase 5¾).
+- Trusting the Pages builds API `.commit` or your own local `dig` — both lie (stale
+  build sha, stale DNS cache); verify deployed CONTENT by curl and DNS via the
+  registrar's authoritative nameserver.
+- A wildcard `*.<domain>` CNAME at GitHub Pages WITHOUT verifying the domain on the
+  GitHub account — that is an open subdomain-takeover door.
